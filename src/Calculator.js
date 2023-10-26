@@ -1,85 +1,103 @@
-// Import React and the Component class from the 'react' library
 import React, { Component } from 'react';
-// Import the styles defined in the 'Calculator.css' file
 import './Calculator.css';
 
-// Define a class component called 'Calculator' that extends the 'Component' class
 class Calculator extends Component {
-    // Constructor method, called when an instance of the component is created
     constructor() {
-        super(); // Call the constructor of the parent class
-        // Initialize the component's state with 'equation' and 'result' properties
+        super();
+        // Initialize the component's state with an empty equation and a result of '0'.
         this.state = {
-            equation: '', // Stores the input equation
-            result: '0', // Stores the calculation result
+            equation: '',
+            result: '0',
         };
     }
 
-    // Handler for clicking on a number button
+    // Handler for number buttons
     handleNumberClick = (number) => {
         this.setState((prevState) => ({
-            equation: prevState.equation + number, // Append the clicked number to the equation
+            equation: prevState.equation + number, // Append the clicked number to the equation.
         }));
     };
 
-    // Handler for clicking on an operator button (+, -, *, /)
+    // Handler for operator buttons
     handleOperatorClick = (operator) => {
         this.setState((prevState) => ({
-            equation: prevState.equation + operator, // Append the clicked operator to the equation
+            equation: prevState.equation + operator, // Append the clicked operator to the equation.
         }));
     };
 
-    // Handler for clicking the "C" button to clear the equation
+    // Handler to clear the equation and result
     handleClear = () => {
         this.setState({
-            equation: '', // Clear the equation
-            result: '0', // Reset the result to '0'
+            equation: '',
+            result: '0',
         });
     };
 
-    // Handler for clicking the "=" button to evaluate the equation
+    // Handler to delete the last character in the equation
+    handleBackspace = () => {
+        this.setState((prevState) => ({
+            equation: prevState.equation.slice(0, -1), // Remove the last character from the equation.
+        }));
+    };
+
+    // Handler for the equals button
     handleEquals = () => {
         try {
-            const result = this.evaluateExpression(this.state.equation); // Call a function to evaluate the equation
+            const result = this.evaluateExpression(this.state.equation); // Evaluate the expression
             this.setState({
-                result: result.toString(), // Set the result to the evaluated result
+                result: result.toString(), // Update the result with the calculated value.
             });
         } catch (error) {
             this.setState({
-                result: 'Error', // Display 'Error' if an exception occurs during evaluation
+                result: 'Error', // Handle errors by displaying 'Error' in the result.
             });
         }
     };
 
-    // Function to evaluate a given expression
+    // Function to evaluate the mathematical expression
     evaluateExpression = (expression) => {
-        // Remove any characters that are not digits, parentheses, or basic operators (+, -, *, /)
-        const sanitizedExpression = expression.replace(/[^-()\d/*+.]/g, '');
+        const sanitizedExpression = expression.replace(/[^-()\d/*+.]/g, ''); // Sanitize the expression
 
-        // Replace multiple consecutive operators with a single one (e.g., "--" with "+")
+        // Replace multiple operators with a single one (e.g., "--" with "+")
         const normalizedExpression = sanitizedExpression.replace(/[-+*/]{2,}/g, (match) => match[0]);
 
-        // Use the 'new Function' constructor to evaluate the expression as JavaScript code
-        // Note: Using 'new Function' can be dangerous if the input is not trusted, as it can execute arbitrary code
-        return new Function('return ' + normalizedExpression)();
+        // Evaluate the expression using the Function constructor (use with caution)
+        // eslint-disable-next-line no-new-func
+        return new Function('return ' + normalizedExpression)(); // Calculate and return the result.
     };
 
-    // Render method that defines the structure and layout of the component
     render() {
         return (
             <div className="calculator">
-                <div className="calculator-heading">Casio Calculator</div>
+                <div className="calculator-heading">Realistic Calculator</div>
                 <div className="output-area">
-                    <div className="equation">{this.state.equation}</div> {/* Display the input equation */}
-                    <div className="result">{this.state.result}</div> {/* Display the calculation result */}
+                    <div className="equation">{this.state.equation}</div>
+                    <div className="result">{this.state.result}</div>
                 </div>
                 <div className="buttons">
-                    {/* Define buttons for numbers, operators, and control actions with click handlers */}
+                    {/* Buttons for numbers, operators, clear, backspace, equals */}
+                    <button onClick={() => this.handleNumberClick('7')}>7</button>
+                    <button onClick={() => this.handleNumberClick('8')}>8</button>
+                    <button onClick={() => this.handleNumberClick('9')}>9</button>
+                    <button onClick={() => this.handleOperatorClick('+')}>+</button>
+                    <button onClick={() => this.handleNumberClick('4')}>4</button>
+                    <button onClick={() => this.handleNumberClick('5')}>5</button>
+                    <button onClick={() => this.handleNumberClick('6')}>6</button>
+                    <button onClick={() => this.handleOperatorClick('-')}>-</button>
+                    <button onClick={() => this.handleNumberClick('1')}>1</button>
+                    <button onClick={() => this.handleNumberClick('2')}>2</button>
+                    <button onClick={() => this.handleNumberClick('3')}>3</button>
+                    <button onClick={() => this.handleOperatorClick('*')}>*</button>
+                    <button onClick={() => this.handleNumberClick('0')}>0</button>
+                    <button onClick={() => this.handleOperatorClick('.')}>.</button>
+                    <button onClick={() => this.handleClear()}>C</button>
+                    <button onClick={() => this.handleBackspace()}>DEL</button>
+                    <button onClick={() => this.handleEquals()}>=</button>
+                    <button onClick={() => this.handleOperatorClick('/')}>/</button>
                 </div>
             </div>
         );
     }
 }
 
-// Export the 'Calculator' component as the default export of this module
 export default Calculator;
